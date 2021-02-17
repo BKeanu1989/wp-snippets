@@ -1,5 +1,7 @@
 # Mokka Wordpress Snipptes #
-## Woocommerce ##
+
+# ***Inhaltsverzeichnis***
+## ***Woocommerce***
 1. [Wc Emails](#wc-emails)
 2. [Custom Template Loader](#custom-template-loader)
 3. [Products](#products)
@@ -8,17 +10,20 @@
 6. [Orders](#orders) | [Documentation - WC_Order](https://woocommerce.github.io/code-reference/classes/WC-Order.html)
 7. [Shipping](#shipping)
 
-## Wordpress
+## ***Wordpress***
 1. [List of Hooks](#wp-hooks)
 2. [Cron](#cron)
 3. [Custom Logger](#custom-logger)
+4. [API](#api)
 
-### Wp Hooks
+## ***Wp Hooks***
 1. [Ajax Hooks](#ajax-hooks) 
 2. [Localize Script](#localize-script)
 3. [Nonce Beispiel](#ajax-hooks) & Resource: [Documenation](https://codex.wordpress.org/WordPress_Nonces) | [Handbook](https://developer.wordpress.org/themes/theme-security/using-nonces/)
 
-### Wc Emails
+## ***Woocommerce***
+
+### ***Wc Emails***
 > email.php
 >
 > Email Datei muss existieren
@@ -229,7 +234,7 @@ class Mokka_Wp_Bandcamp_Email_Filter {
 new Mokka_Wp_Bandcamp_Email_Filter();
 ```
 
-### Custom Template Loader
+### ***Custom Template Loader***
 > template-loader.php
 >
 > needs /template folder
@@ -271,16 +276,16 @@ function mwpbc_load_template($file_name, $args) {
     }
 }
 ```
-### Products
+### ***Products***
 > Products
 
-### Variations
+### ***Variations***
 > Variations
 
-### Wc Hooks
+### ***Wc Hooks***
 > Empty For now
 
-### Orders 
+### ***Orders*** 
 > empty still
 <dl>
   <dt>Definition list</dt>
@@ -290,10 +295,12 @@ function mwpbc_load_template($file_name, $args) {
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
 
-### Shipping
+### ***Shipping***
 > Empty For now
 
-### Wp Hooks
+<!-- ---- -->
+# ***Wordpress***
+### ***Wp Hooks***
 > Empty For now
 
 
@@ -326,10 +333,18 @@ function mwpbc_load_template($file_name, $args) {
     }
 ```
 
-### Custom Hooks
+### ***Custom Logger***
 > empty now
 
-#### Ajax Hooks
+
+### ***Api***
+> empty for now
+---
+
+# ***Custom Hooks***
+> empty now
+
+#### ***Ajax Hooks***
 > 
 
 > PHP
@@ -381,7 +396,7 @@ jQuery.ajax({
 
 ```
 
-#### Localize Script
+#### ***Localize Script***
 
 ```php
 $action = 'SAMESAME';
