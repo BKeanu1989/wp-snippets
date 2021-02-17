@@ -7,6 +7,7 @@
 5. [List of Hooks](#wc-hooks)
 6. [Orders](#orders) | [Documentation - WC_Order](https://woocommerce.github.io/code-reference/classes/WC-Order.html)
 7. [Shipping](#shipping)
+8. [WC Order Items](#wc-order-items)
 
 
 ## ***Woocommerce***
@@ -266,6 +267,10 @@ function mwpbc_load_template($file_name, $args) {
 ```
 ### ***Products***
 > Products
+```php
+$id = 123;
+$_product = wc_get_product($id);
+```
 
 ### ***Variations***
 > Variations
@@ -274,14 +279,20 @@ function mwpbc_load_template($file_name, $args) {
 > Empty For now
 
 ### ***Orders*** 
-> empty still
-<dl>
-  <dt>Definition list</dt>
-  <dd>Is something people use sometimes.</dd>
 
-  <dt>Markdown in HTML</dt>
-  <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
-</dl>
+#### ***Get Items***
+[See](#get-order-items)
 
 ### ***Shipping***
 > Empty For now
+
+### WC Order Items
+> Resource (https://woocommerce.github.io/code-reference/classes/WC-Order-Item.html) 
+
+#### get order items
+```php
+$_order = wc_get_order($id); 
+if ($_order) {
+    $items = $_order->get_items(); // returns WC_Order_Item_Product
+}
+```
