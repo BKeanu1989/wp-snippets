@@ -7,6 +7,7 @@
 4. [API](#api)
     - 1. [WP Rest Controller](#wp-rest-controller) 
 5. [Database](#database)
+6. [Template Loader](#template-loader)
 
 ## ***Wp Hooks***
 1. [Ajax Hooks](#ajax-hooks) 
@@ -504,7 +505,48 @@ new Mokka_Test_Api();
         add_option('mwc_artist_db_version', $db_artist_version);
     }
 ```
+### Template Loader
+> template-loader.php
+>
+> needs /template folder
+```php
+function mwpbc_load_template($file_name, $args) {
+    global $wp_version;
 
+    // if template supports args argument
+    if (version_compare($wp_version, '5.5.0', '>=')) {
+        if ( $overridden_template = locate_template( $file_name ) ) {
+            /*
+             * locate_template() returns path to file.
+             * if either the child theme or the parent theme have overridden the template.
+             */
+            load_template( $overridden_template, false, $args );
+        } else {
+            /*
+             * If neither the child nor parent theme have overridden the template,
+             * we load the template from the 'templates' sub-directory of the directory this file is in.
+             */
+            load_template( MOKKA_WP_BANDCAMP_PLUGIN_PATH . "templates/$file_name", false, $args );
+        }
+    } else {
+        if ( $overridden_template = locate_template( $file_name ) ) {
+            /*
+             * locate_template() returns path to file.
+             * if either the child theme or the parent theme have overridden the template.
+             */
+            set_query_var('args', $args);
+            load_template( $overridden_template, false);
+        } else {
+            /*
+             * If neither the child nor parent theme have overridden the template,
+             * we load the template from the 'templates' sub-directory of the directory this file is in.
+             */
+            set_query_var('args', $args);
+            load_template( MOKKA_WP_BANDCAMP_PLUGIN_PATH . "templates/$file_name");
+        }
+    }
+}
+```
 
 ---
 

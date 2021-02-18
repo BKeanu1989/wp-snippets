@@ -224,45 +224,31 @@ new Mokka_Wp_Bandcamp_Email_Filter();
 ```
 
 ### ***Custom Template Loader***
-> template-loader.php
->
-> needs /template folder
 ```php
-function mwpbc_load_template($file_name, $args) {
-    global $wp_version;
+add_filter( 'woocommerce_locate_template', 'woo_adon_plugin_template', 1, 3 );
+   function woo_adon_plugin_template( $template, $template_name, $template_path ) {
+     global $woocommerce;
+     $_template = $template;
+     if ( ! $template_path ) 
+        $template_path = $woocommerce->template_url;
+ 
+     $plugin_path  = untrailingslashit( plugin_dir_path( __FILE__ ) )  . '/template/woocommerce/';
+ 
+    // Look within passed path within the theme - this is priority
+    $template = locate_template(
+    array(
+      $template_path . $template_name,
+      $template_name
+    )
+   );
+ 
+   if( ! $template && file_exists( $plugin_path . $template_name ) )
+    $template = $plugin_path . $template_name;
+ 
+   if ( ! $template )
+    $template = $_template;
 
-    // if template supports args argument
-    if (version_compare($wp_version, '5.5.0', '>=')) {
-        if ( $overridden_template = locate_template( $file_name ) ) {
-            /*
-             * locate_template() returns path to file.
-             * if either the child theme or the parent theme have overridden the template.
-             */
-            load_template( $overridden_template, false, $args );
-        } else {
-            /*
-             * If neither the child nor parent theme have overridden the template,
-             * we load the template from the 'templates' sub-directory of the directory this file is in.
-             */
-            load_template( MOKKA_WP_BANDCAMP_PLUGIN_PATH . "templates/$file_name", false, $args );
-        }
-    } else {
-        if ( $overridden_template = locate_template( $file_name ) ) {
-            /*
-             * locate_template() returns path to file.
-             * if either the child theme or the parent theme have overridden the template.
-             */
-            set_query_var('args', $args);
-            load_template( $overridden_template, false);
-        } else {
-            /*
-             * If neither the child nor parent theme have overridden the template,
-             * we load the template from the 'templates' sub-directory of the directory this file is in.
-             */
-            set_query_var('args', $args);
-            load_template( MOKKA_WP_BANDCAMP_PLUGIN_PATH . "templates/$file_name");
-        }
-    }
+   return $template;
 }
 ```
 ### ***Products***
@@ -276,17 +262,26 @@ $_product = wc_get_product($id);
 > Variations
 
 ### ***Wc Hooks***
-> Empty For now
-
+- wc_get_template  
+- Visual Hooks
+    - [WooCommerce Single Product Page](https://www.businessbloomer.com/woocommerce-visual-hook-guide-single-product-page/)
+    - [WooCommerce Visual Hook Guide: Archive / Shop / Cat Pages](https://www.businessbloomer.com/woocommerce-visual-hook-guide-archiveshopcat-page/)
+    - [WooCommerce Visual Hook Guide: Checkout Page](https://www.businessbloomer.com/woocommerce-visual-hook-guide-checkout-page/)
+- [Hooks Helpdesk](https://hooks.wpdesk.org/)
 ### ***Orders*** 
-
+```php
+$_order = wc_get_order($id); 
+```
 #### ***Get Items***
 [See](#get-order-items)
 
 ### ***Shipping***
 > Empty For now
 
-### WC Order Items
+### ***Cart***  
+
+
+### ***WC Order Items***
 > Resource (https://woocommerce.github.io/code-reference/classes/WC-Order-Item.html) 
 
 #### get order items
