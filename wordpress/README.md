@@ -8,11 +8,14 @@
     - 1. [WP Rest Controller](#wp-rest-controller) 
 5. [Database](#database)
 6. [Template Loader](#template-loader)
+7. [Images](#images)
+8. [Wp Media](#wp-media)
 
 ## ***Wp Hooks***
 1. [Ajax Hooks](#ajax-hooks) 
 2. [Localize Script](#localize-script)
 3. [Nonce Beispiel](#ajax-hooks) & Resource: [Documenation](https://codex.wordpress.org/WordPress_Nonces) | [Handbook](https://developer.wordpress.org/themes/theme-security/using-nonces/)
+4. [Admin Scripts](#admin-scripts)
 
 # ***Wordpress***
 ### ***Wp Hooks***
@@ -547,7 +550,155 @@ function mwpbc_load_template($file_name, $args) {
     }
 }
 ```
+###  Images
+```php
 
+$test = wp_get_attachment_metadata($attachment_id);
+array(5) {
+  ["width"]=>
+  int(2339)
+  ["height"]=>
+  int(1606)
+  ["file"]=>
+  string(33) "2020/09/two-is-a-magic-number.jpg"
+  ["sizes"]=>
+  array(26) {
+    ["medium"]=>
+    array(4) {
+      ["file"]=>
+      string(33) "two-is-a-magic-number-300x206.jpg"
+      ["width"]=>
+      int(300)
+      ["height"]=>
+      int(206)
+      ["mime-type"]=>
+      string(10) "image/jpeg"
+    }
+    ["large"]=>
+    array(4) {
+      ["file"]=>
+      string(34) "two-is-a-magic-number-1024x703.jpg"
+      ["width"]=>
+      int(1024)
+      ["height"]=>
+      int(703)
+      ["mime-type"]=>
+      string(10) "image/jpeg"
+    }
+    ["thumbnail"]=>
+    array(4) {
+      ["file"]=>
+      string(33) "two-is-a-magic-number-150x150.jpg"
+      ["width"]=>
+      int(150)
+      ["height"]=>
+      int(150)
+      ["mime-type"]=>
+      string(10) "image/jpeg"
+    }
+    ["medium_large"]=>
+    array(4) {
+      ["file"]=>
+      string(33) "two-is-a-magic-number-768x527.jpg"
+      ["width"]=>
+      int(768)
+      ["height"]=>
+      int(527)
+      ["mime-type"]=>
+      string(10) "image/jpeg"
+    }
+    // etc.
+  }
+}
+
+wp_get_attachment_image_src($_movie_image, 'full');
+array(4) {
+  [0]=>
+  string(74) "https://snowdance.net/wp-content/uploads/2020/09/two-is-a-magic-number.jpg"
+  [1]=>
+  int(2339)
+  [2]=>
+  int(1606)
+  [3]=>
+  bool(false)
+}
+```
+---
+### WP Media
+```html
+        <div class="form-group">
+            <label for="movie_image">
+                <?php _e( 'Filmbild', 'snowdance' ); ?>
+            </label>
+            <input type="text" id="movie_image" class="form-control" name="movie_image" value="<?php echo esc_attr( $movie_image ); ?>" data-uploader-title="uploader title" data-uploader_button_text="uploader button text"/>
+        </div>      
+```
+```js
+export function install_single_media_attachment_listener(identifier,index) {
+    let file_frame, attachment;
+
+    jQuery(identifier).on('click', function(e) {
+        e.preventDefault();
+        console.log("attachment listener")
+        if (file_frame) {
+            file_frame.open();
+            return;
+        }
+
+        // Create the media frame.
+        file_frame = wp.media.frames.file_frame = wp.media({
+            // title: jQuery(this).data('uploader_title'),
+            // button: {
+            //     text: jQuery(this).data('uploader_button_text'),
+            // },
+            multiple: false // Set to true to allow multiple files to be selected
+        });
+
+        // When a file is selected, run a callback.
+        file_frame.on('select', function(){
+            attachment = file_frame.state().get('selection').first().toJSON();
+            // acf_errors: false
+            // alt: ""
+            // author: "1"
+            // authorName: "NWBZPWNR"
+            // caption: ""
+            // compat: {item: "<input type="hidden" name="attachments[2221][menu_…chaubilder regenerieren</a></td>↵		</tr>↵</table>", meta: ""}
+            // context: ""
+            // date: Thu Feb 25 2021 12:46:29 GMT+0100 (Mitteleuropäische Normalzeit) {}
+            // dateFormatted: "25. Februar 2021"
+            // description: ""
+            // editLink: "https://snowdance.net/wp-admin/post.php?post=2221&action=edit"
+            // filename: "two-is-a-magic-number.jpg"
+            // filesizeHumanReadable: "949 kB"
+            // filesizeInBytes: 971809
+            // height: 1606
+            // icon: "https://snowdance.net/wp-includes/images/media/default.png"
+            // id: 2221
+            // link: "https://snowdance.net/two-is-a-magic-number/"
+            // menuOrder: 0
+            // meta: false
+            // mime: "image/jpeg"
+            // modified: Thu Feb 25 2021 12:46:29 GMT+0100 (Mitteleuropäische Normalzeit) {}
+            // name: "two-is-a-magic-number"
+            // nonces: {update: "ee7f848888", delete: "a23052de4c", edit: "bc0ca51cb0"}
+            // orientation: "landscape"
+            // sizes: {thumbnail: {…}, medium: {…}, large: {…}, fusion-200: {…}, fusion-400: {…}, …}
+            // status: "inherit"
+            // subtype: "jpeg"
+            // title: "two is a magic number"
+            // type: "image"
+            // uploadedTo: 0
+            // url: "https://snowdance.net/wp-content/uploads/2020/09/two-is-a-magic-number.jpg"
+            // width: 2339
+            var field = document.querySelector(identifier);
+            var id = attachment.id;
+            field.value = id; 
+        });
+
+        file_frame.open();
+    });
+}
+```
 ---
 
 # ***Custom Hooks***
@@ -595,6 +746,22 @@ jQuery.ajax({
     }
 })   
 
+```
+
+#### ***Admin Scripts***
+```php
+/**
+ * Enqueue a script in the WordPress admin on edit.php.
+ *
+ * @param int $hook Hook suffix for the current admin page.
+ */
+function wpdocs_selectively_enqueue_admin_script( $hook ) {
+    if ( 'edit.php' != $hook ) {
+        return;
+    }
+    wp_enqueue_script( 'my_custom_script', plugin_dir_url( __FILE__ ) . 'myscript.js', array(), '1.0' );
+}
+add_action( 'admin_enqueue_scripts', 'wpdocs_selectively_enqueue_admin_script' );
 ```
 
 > In HTML FORM
