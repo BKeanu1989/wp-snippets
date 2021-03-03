@@ -251,6 +251,19 @@ add_filter( 'woocommerce_locate_template', 'woo_adon_plugin_template', 1, 3 );
    return $template;
 }
 ```
+
+```php
+    add_action( 'woocommerce_single_product_summary', array($this, 'custom_product_add_to_cart'), 60 );
+
+    public function custom_product_add_to_cart () {
+        global $product;
+        
+        if ( 'ticket' == $product->get_type() ) {
+            // do_action( 'woocommerce_before_add_to_cart_button' ); 
+            require_once SNOWDANCE_PLUGIN_PATH . 'includes/tickets/templates/single-product/add-to-cart/simple.php';
+        }
+    }
+```
 ### ***Products***
 > Products
 ```php
